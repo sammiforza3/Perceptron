@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 //voglio ritornare i campi che compongono la prima riga del dataset
 //il parser riceve il buffer, che è ciò che il documento contiene
@@ -7,6 +8,9 @@
 //per adesso quindi parsiamo solo la prima riga, che sarebbe la lista delle nostre features
 //per testare facciamo che il parser ritorna solo la prima stringa
 void parser(char *data, size_t sizeData, char divider)
+
+
+
 {
     printf("printing the data in function: %s\n", data);
 
@@ -41,7 +45,7 @@ void parser(char *data, size_t sizeData, char divider)
             if(data[i]!=divider && i<sizeData)
             {
                 features[entry][posEntry] = data[i];
-                printf("%c\n", data[i]);
+                printf("%c", data[i]);
                 posEntry ++; 
             }
             else
@@ -50,6 +54,7 @@ void parser(char *data, size_t sizeData, char divider)
                 features[entry][posEntry]= '\0';
                 posEntry = sizeSingleEntry;  //forziamo al condzione di stop while
                 entry++;  //passiamo alla entry successiva
+                printf("%c", '\n');
                 
                 
             }
@@ -60,7 +65,7 @@ void parser(char *data, size_t sizeData, char divider)
         
         
     }
-
+    //non viene salvata class label per qualche ragione
     for(int i=0; i < numbersOfEntry; i++ )
     {
         printf("%s\n", features[i]);
@@ -94,6 +99,8 @@ int csvOpener(char path[])
 {
     printf("%s\n", "<-------------------------------->");
     char buffer[10000];
+    char *data;
+    int i = 1;
     FILE *dataset = fopen("Dataset.csv","r");
     if(dataset == NULL)
     {
@@ -105,16 +112,25 @@ int csvOpener(char path[])
 
     //creo buffer e leggo la prima riga del dataset
     fgets(buffer, sizeof(buffer), dataset);
-    //printf("%s\n", buffer);
+    printf("%s\n", buffer);
 
-    printf("%s\n", "opening the parse");
+    //parsing
+    data = strtok(buffer,",");
+    while(data!=NULL)
+    {
+        printf("data number %d is %s\n",i, data);
+        data = strtok(NULL,",");
+        i++;
+    }
 
+    //reading the entire dataset of the line:
+    printf("%s\n", buffer);
+    while(fgets(buffer, sizeof(buffer), dataset))
+    {
+        printf("%s\n",buffer);
+    }
 
-    //ottengo la prima riga del dataset
-    char features[50];
-    char divider = ',';
-    size_t sizeData = sizeof(buffer)/sizeof(buffer[0]);
-    parser(buffer,sizeData, divider);
+    
 
     printf("%s\n", "<-------------------------------->");
     return 1;
